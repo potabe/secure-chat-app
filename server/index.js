@@ -8,11 +8,20 @@ const cors = require('cors');
 const path = require('path');
 
 // ─── Firebase Admin Init ────────────────────────────────────────────────────
-const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_KEY || './serviceAccountKey.json';
-
 let firebaseInitialized = false;
 try {
-  const serviceAccount = require(path.resolve(serviceAccountPath));
+  let serviceAccount;
+  const envKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+
+  if (envKey && envKey.trim().startsWith('{')) {
+    // Parse directly from Env Var string (For Railway, Heroku, etc.)
+    serviceAccount = JSON.parse(envKey);
+  } else {
+    // Fallback to local file path
+    const serviceAccountPath = envKey || './serviceAccountKey.json';
+    serviceAccount = require(path.resolve(serviceAccountPath));
+  }
+
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
