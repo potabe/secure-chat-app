@@ -32,26 +32,29 @@ function RoomItem({ room, isActive, onSelect, onLeave, collapsed }) {
 
       {/* Conditional Right Action Area — only show when not collapsed */}
       {!collapsed && (
-        hovered ? (
+        <div className="flex items-center gap-1.5 shrink-0 ml-1">
+          {!isActive && room.unread > 0 && (
+            <span
+              className="min-w-[18px] h-[18px] rounded-full bg-[#f23f43] text-white text-[10px] font-bold flex items-center justify-center px-1"
+            >
+              {room.unread > 9 ? '9+' : room.unread}
+            </span>
+          )}
+          
+          <StatusIcon 
+            className="w-3.5 h-3.5 block md:group-hover:hidden" 
+            style={{ color }} 
+            stroke={2} 
+          />
+
           <button
             onClick={(e) => { e.stopPropagation(); onLeave(room.roomId); }}
-            className="w-5 h-5 rounded flex items-center justify-center hover:bg-[#f23f43]/20 transition-colors shrink-0 ml-1"
+            className="w-6 h-6 rounded items-center justify-center hover:bg-[#f23f43]/20 transition-colors shrink-0 flex md:hidden md:group-hover:flex"
             title="Keluar dari room"
           >
             <IconX className="w-3 h-3 text-muted-foreground hover:text-[#f23f43]" stroke={2} />
           </button>
-        ) : (
-          <div className="flex items-center gap-1.5 shrink-0 ml-1">
-            <StatusIcon className="w-3.5 h-3.5" style={{ color }} stroke={2} />
-            {!isActive && room.unread > 0 && (
-              <span
-                className="min-w-[18px] h-[18px] rounded-full bg-[#f23f43] text-white text-[10px] font-bold flex items-center justify-center px-1"
-              >
-                {room.unread > 9 ? '9+' : room.unread}
-              </span>
-            )}
-          </div>
-        )
+        </div>
       )}
 
       {/* Collapsed mode: unread dot only */}
