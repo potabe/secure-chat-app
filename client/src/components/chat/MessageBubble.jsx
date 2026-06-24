@@ -32,6 +32,7 @@ export default function MessageBubble({ message, onReact, onReply }) {
   const repliedMessage = replyToId ? room?.messages?.find(m => m.id === replyToId) : null;
 
   const [timeLeft, setTimeLeft] = useState(ttl || 0);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
 
   useEffect(() => {
     if (!ttl || ttl <= 0) return;
@@ -68,9 +69,10 @@ export default function MessageBubble({ message, onReact, onReply }) {
   return (
     <div
       className={cn(
-        'flex items-start gap-3 px-4 py-1 hover:bg-accent group message-enter',
+        'flex items-start gap-3 px-4 py-1 hover:bg-accent group message-enter cursor-pointer md:cursor-default',
         isMine && 'flex-row-reverse'
       )}
+      onClick={() => setShowMobileMenu(!showMobileMenu)}
     >
       {!isMine && <Avatar email={fromEmail} />}
       <div className={cn('flex-1 min-w-0', isMine && 'flex flex-col items-end')}>
@@ -127,8 +129,9 @@ export default function MessageBubble({ message, onReact, onReply }) {
           {/* Action Menu (Reaction & Reply) on Hover */}
           {!error && (onReact || onReply) && (
             <div className={cn(
-              "opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-card border border-border rounded-lg px-1 py-0.5 absolute -top-4 z-10 shadow-sm",
-              isMine ? "right-2" : "left-2"
+              "transition-opacity flex items-center gap-1 bg-card border border-border rounded-lg px-1 py-0.5 absolute -top-4 z-10 shadow-sm",
+              isMine ? "right-2" : "left-2",
+              showMobileMenu ? "opacity-100" : "opacity-0 md:group-hover:opacity-100"
             )}>
               {onReply && (
                 <button
